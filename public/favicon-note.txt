@@ -1,0 +1,2 @@
+// Add a favicon placeholder to avoid 404
+// Place a real favicon.ico/favicon.png in public/ folder

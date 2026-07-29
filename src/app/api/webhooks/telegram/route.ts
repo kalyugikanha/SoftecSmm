@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
       const updatedText =
         `${statusEmoji} <b>Post ${statusLabel}</b>\n\n` +
         originalText
-          .replace(/\n<i>Approve to add to calendar.*<\/i>$/s, "")
+          .replace(/\n<i>Approve to add to calendar[\s\S]*<\/i>$/, "")
           .replace(/^🚀 <b>New AI Post Idea Ready for Approval!<\/b>/, `${statusEmoji} <b>Post ${statusLabel}</b>`)
           .trim() +
         `\n\n━━━━━━━━━━━━━━━━━━━━\n` +

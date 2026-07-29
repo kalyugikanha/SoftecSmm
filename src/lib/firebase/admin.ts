@@ -15,8 +15,8 @@ if (!admin.apps.length) {
   }
 }
 
-const adminDb = admin.firestore();
-const adminAuth = admin.auth();
-const adminStorage = admin.storage();
+const adminDb = admin.apps.length ? admin.firestore() : null as unknown as admin.firestore.Firestore;
+const adminAuth = admin.apps.length ? admin.auth() : null as unknown as admin.auth.Auth;
+const adminStorage = admin.apps.length ? admin.storage() : null as unknown as admin.storage.Storage;
 
 export { admin, adminDb, adminAuth, adminStorage };

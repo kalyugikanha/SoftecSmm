@@ -40,6 +40,7 @@ interface Idea {
   hashtags: string[]; status: string;
   imageUrl?: string; suggestedImagePrompt?: string;
   brandId: string; publishedAt?: string; pinterestPinId?: string;
+  referenceImageUrl?: string;
 }
 
 type Phase = "select" | "briefing" | "brief_ready" | "generating" | "concepts_ready" | "published";
@@ -76,8 +77,8 @@ function BriefCard({ brief }: { brief: CreativeBrief }) {
   const fields = [
     { icon: "🎯", label: "Objective",     value: brief.campaignObjective },
     { icon: "🎭", label: "Visual Story",  value: brief.visualStory       },
-    { icon: "⭐", label: "Hero Object",   value: brief.heroObject         },
-    { icon: "🌍", label: "Scene",         value: brief.scene              },
+    { icon: "⭐", label: "Visual Concept", value: brief.visualConcept    },
+    { icon: "🚫", label: "Anti-Cliche",    value: brief.antiCliche       },
     { icon: "💫", label: "Mood",          value: brief.mood               },
     { icon: "🎨", label: "Design Style",  value: brief.designStyle        },
     { icon: "💡", label: "Colour Psych",  value: brief.colourPsychology   },

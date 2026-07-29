@@ -36,11 +36,12 @@ export async function POST(req: NextRequest) {
     const baseUrl = 'http://localhost:3000';
     const dims = getDimensions(brief.aspectRatio, platform);
 
-    // Modify the hero object based on slide index for variation
-    const slideObject = `${brief.heroObject}, slide ${slideIndex} of ${totalSlides} in a sequence showing progress or variations`;
+    // Modify the visual concept based on slide index for variation
+    const slideObject = `${brief.visualConcept}, slide ${slideIndex} of ${totalSlides} in a sequence showing progress or variations`;
 
     const heroAssetReq = {
-      heroObject: slideObject,
+      visualConcept: slideObject,
+      antiCliche: brief.antiCliche || '',
       mood: brief.mood,
       style: concept.style,
       colors: brief.colors || ['#8B0000', '#ffffff'],

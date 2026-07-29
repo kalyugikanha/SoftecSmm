@@ -452,10 +452,10 @@ export default function CreativeStudioPage() {
         setSlideProgress(i);
         
         // Use previous slide's image as reference to maintain consistency
-        const referenceImageUrl = i > 1 ? newSlides[i - 2].imageUrl : undefined;
+        const referenceImageUrl: string | undefined = i > 1 ? newSlides[i - 2].imageUrl : undefined;
         
         // Sequential fetch call per slide.
-        const res = await fetch("/api/ai/generate-slide", {
+        const res: Response = await fetch("/api/ai/generate-slide", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
@@ -469,7 +469,7 @@ export default function CreativeStudioPage() {
           }),
         });
         
-        const data = await res.json();
+        const data: any = await res.json();
         if (!res.ok) throw new Error(data.error || `Slide ${i} failed`);
         
         newSlides.push({
@@ -849,7 +849,7 @@ export default function CreativeStudioPage() {
                 </div>
 
                 {/* Carousel Slides Generator */}
-                {selectedConcept && brief?.format === 'carousel' && (
+                {selectedConcept && (brief?.format as any) === 'carousel' && (
                   <div style={{
                     marginTop: "24px", padding: "20px",
                     background: "#fff", border: "1px solid #e2e8f0",

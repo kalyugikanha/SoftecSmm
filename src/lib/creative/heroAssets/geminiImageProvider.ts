@@ -51,17 +51,38 @@ export class GeminiImageProvider implements IHeroAssetProvider {
 
         const parts: any[] = [{ text: promptText }];
 
-        // Handle reference image for character/style consistency
+        // Handle reference image by extracting its style FIRST, without passing the pixel data to the image generator
+        let extractedStyle = "";
         if (request.referenceImageUrl) {
           const refImage = await this.fetchImageAsBase64(request.referenceImageUrl);
           if (refImage) {
-            parts.push({
-              inlineData: {
-                data: refImage.data,
-                mimeType: refImage.mimeType
-              }
-            });
-            parts.push({ text: `CRITICAL: Use the provided image ONLY as a general style, mood, and layout inspiration. DO NOT copy any text, logos, or specific branding from the reference image. The final design must be completely original, relevant to the Headline, and use OUR Brand Name ("${request.brandName}").` });
+            console.log("[GeminiImageProvider] Extracting style from reference image using Gemini 2.5 Flash...");
+            const visionModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const visionPrompt = `You are a world-class Art Director. Analyze this reference image and write an extremely detailed description of its visual aesthetic.
+            Describe the lighting, mood, color palette, composition, camera angle, and structural layout.
+            CRITICAL RULE: DO NOT mention any text, brand names, logos, UI buttons, or phone numbers present in the image. We only want the artistic and structural framework.`;
+            
+            try {
+              const visionResult = await visionModel.generateContent([
+                visionPrompt,
+                { inlineData: { data: refImage.data, mimeType: refImage.mimeType } }
+              ]);
+              
+              extractedStyle = visionResult.response.text().trim();
+              console.log("[GeminiImageProvider] Extracted Style:", extractedStyle);
+              
+              parts.push({ 
+                text: `CRITICAL DESIGN INSPIRATION (Must Follow): 
+                Design the image using EXACTLY this aesthetic, lighting, and layout structure:
+                """
+                ${extractedStyle}
+                """
+                
+                However, the final design must be completely original, feature NO competitor branding or weird text blobs, and perfectly fit OUR headline and brand name ("${request.brandName}").`
+              });
+            } catch (visionError) {
+              console.warn("[GeminiImageProvider] Vision extraction failed, proceeding without reference style.", visionError);
+            }
           }
         }
 
@@ -72,12 +93,10 @@ export class GeminiImageProvider implements IHeroAssetProvider {
         // Use the new generateContent API with IMAGE response modality
         const result = await model.generateContent({
           contents: [{ role: "user", parts }],
-          // This requires the latest SDK version, if it fails we fallback to typographic
-          // @ts-ignore
           generationConfig: {
             responseModalities: ["IMAGE"],
           }
-        });
+        } as any);
 
         // The image is returned as base64 in the response
         // Wait, the SDK might return it in inlineData or similar. Let's parse it based on expected format.

@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = req.nextUrl.origin;
     const dims = getDimensions(brief.aspectRatio, platform);
 
     // Modify the visual concept based on slide index for variation

@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
 
     // Always use localhost for preview URLs — the OG renderer is a local API route.
     // Using NEXT_PUBLIC_APP_URL (localtunnel) breaks image loading in the browser.
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = req.nextUrl.origin;
     const dims = getDimensions(brief.aspectRatio, platform);
 
     // Step 1: Generate 3 concept layouts via Gemini
